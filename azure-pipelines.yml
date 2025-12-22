@@ -1,0 +1,37 @@
+trigger: none
+
+pool:
+  name: Default
+
+steps:
+- task: TerraformInstaller@1
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    backendServiceArm: 'erp-service'
+    backendAzureRmOverrideSubscriptionID: 'de1c1815-4f90-412b-9551-d55f0de9407d'
+    backendAzureRmResourceGroupName: 'rg_erp'
+    backendAzureRmStorageAccountName: 'erpportal1'
+    backendAzureRmContainerName: 'erpforvision'
+    backendAzureRmKey: 'erp.terraform_state'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'plan'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    environmentServiceNameAzureRM: 'erp-service'
+    environmentAzureRmOverrideSubscriptionID: 'de1c1815-4f90-412b-9551-d55f0de9407d'
+
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/environment/dev'
+    environmentServiceNameAzureRM: 'erp-service'
+    environmentAzureRmOverrideSubscriptionID: 'de1c1815-4f90-412b-9551-d55f0de9407d'
